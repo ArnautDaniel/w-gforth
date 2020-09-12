@@ -498,7 +498,8 @@ drop 32 end-structure
 begin-structure Ray
 	drop 0 12 +field Ray-position
 	drop 12 12 +field Ray-direction
-drop 24 end-structure
+  drop 24 end-structure
+
 \ RayHitInfo
 begin-structure RayHitInfo
 	drop 4 4 +field RayHitInfo-distance
@@ -588,13 +589,17 @@ c-function GetMonitorPhysicalHeight GetMonitorPhysicalHeight n -- n	( monitor --
 c-function GetMonitorRefreshRate GetMonitorRefreshRate n -- n	( monitor -- )
 
 \ Wrapping
+
 \c Vector2 * iGetWindowPosition(Vector2 * p){
 \c Vector2 v = GetWindowPosition();
 \c *p = v; return p; }
-c-function iGetWindowPosition iGetWindowPosition a -- a	( Vector2 -- Vector2 )
+c-function iGetWindowPosition iGetWindowPosition a -- a	( emptyVector2 -- Vector2 )
 
+\c Vector2 * iGetWindowScaleDPI(Vector2 * p){
+\c Vector2 v = GetWindowScaleDPI();
+\c *p = v; return p; }
+c-function iGetWindowScaleDPI iGetWindowScaleDPI a -- a ( emptyVector2 -- Vector2 )
 
-c-function GetWindowScaleDPI GetWindowScaleDPI  -- struct	( -- )
 c-function GetMonitorName GetMonitorName n -- s	( monitor -- )
 c-function GetClipboardText GetClipboardText  -- s	( -- )
 c-function SetClipboardText SetClipboardText s -- void	( text -- )
@@ -615,13 +620,55 @@ c-function BeginTextureMode BeginTextureMode a{*(RenderTexture2D*)} -- void	( ta
 c-function EndTextureMode EndTextureMode  -- void	( -- )
 c-function BeginScissorMode BeginScissorMode n n n n -- void	( x y width height -- )
 c-function EndScissorMode EndScissorMode  -- void	( -- )
-c-function GetMouseRay GetMouseRay a{*(Vector2*)} n -- struct	( mousePosition camera -- )
-c-function GetCameraMatrix GetCameraMatrix n -- struct	( camera -- )
-c-function GetCameraMatrix2D GetCameraMatrix2D a{*(Camera2D*)} -- struct	( camera -- )
-c-function GetWorldToScreen GetWorldToScreen a{*(Vector3*)} n -- struct	( position camera -- )
-c-function GetWorldToScreenEx GetWorldToScreenEx a{*(Vector3*)} n n n -- struct	( position camera width height -- )
-c-function GetWorldToScreen2D GetWorldToScreen2D a{*(Vector2*)} a{*(Camera2D*)} -- struct	( position camera -- )
-c-function GetScreenToWorld2D GetScreenToWorld2D a{*(Vector2*)} a{*(Camera2D*)} -- struct	( position camera -- )
+
+\ --------------------------------------------------------
+\ ----------- Custom Defines -----------------------------
+
+\c Ray* iGetMouseRay(Vector2 v, Camera c, Ray * r){
+\c Ray ra = GetMouseRay(v, c);
+\c *r = ra; return r; }
+
+c-function iGetMouseRay iGetMouseRay a{*(Vector2*)} a{*(Camera3D*)} a -- a ( mousePosition camera -- Ray )
+
+\c Matrix* iGetCameraMatrix(Camera c, Matrix* m){
+\c Matrix ma = GetCameraMatrix(c);
+\c *m = ma; return m; }
+
+c-function iGetCameraMatrix iGetCameraMatrix a{*(Camera3D*)} a -- a	( camera matrix -- matrix )
+
+\c Matrix* iGetCameraMatrix2D(Camera2D c, Matrix* m){
+\c Matrix ma = GetCameraMatrix2D(c);
+\c *m = ma; return m; }
+
+c-function iGetCameraMatrix2D iGetCameraMatrix2D a{*(Camera2D*)} a -- a	( camera2d matrix -- matrix )
+
+\c Vector2* iGetWorldToScreen(Vector3 position, Camera camera, Vector2* v){
+\c Vector2 va = GetWorldToScreen(position, camera);
+\c *v = va; return v; }
+
+c-function iGetWorldToScreen iGetWorldToScreen a{*(Vector3*)} a{*(Camera3D*)} a -- a ( position camera vector2 -- vector2 )
+
+\c Vector2* iGetWorldToScreenEx(Vector3 pos, Camera cam, int width, int height, Vector2* v){
+\c Vector2 va = GetWorldToScreenEx(pos, cam, width, height);
+\c *v = va; return v; }
+
+c-function iGetWorldToScreenEx iGetWorldToScreenEx a{*(Vector3*)} a{*(Camera3D*)} n n a -- a	( position camera width height vector2 -- vector2 )
+
+\c Vector2* iGetWorldToScreen2D(Vector2 pos, Camera2D camera, Vector2* v){
+\c Vector2 va = GetWorldToScreen2D(pos, camera);
+\c *v = va; return v; }
+
+c-function iGetWorldToScreen2D iGetWorldToScreen2D a{*(Vector2*)} a{*(Camera2D*)} a -- a	( position camera vector2 -- vector2 )
+
+\c Vector2* iGetScreenToWorld2D(Vector2 pos, Camera2D camera, Vector2* v){
+\c Vector2 va = GetScreenToWorld2D(pos, camera);
+\c *v = va; return v; }
+
+c-function iGetScreenToWorld2D iGetScreenToWorld2D a{*(Vector2*)} a{*(Camera2D*)} a -- a	( position camera vector2 -- vector2 )
+
+\ --------------------------------------------------------
+\ ------------------End Custom Defines--------------------
+
 c-function SetTargetFPS SetTargetFPS n -- void	( fps -- )
 c-function GetFPS GetFPS  -- n	( -- )
 c-function GetFrameTime GetFrameTime  -- r	( -- )
@@ -680,24 +727,48 @@ c-function IsMouseButtonReleased IsMouseButtonReleased n -- n	( button -- )
 c-function IsMouseButtonUp IsMouseButtonUp n -- n	( button -- )
 c-function GetMouseX GetMouseX  -- n	( -- )
 c-function GetMouseY GetMouseY  -- n	( -- )
-c-function GetMousePosition GetMousePosition  -- struct	( -- )
+
+\ ---------------- Custom ------------------
+\c Vector2* iGetMousePosition(Vector2* v){
+\c Vector2 va = GetMousePosition();
+\c *v = va; return v; }
+
+c-function iGetMousePosition iGetMousePosition a -- a	( -- vector2 )
+\ ------------------------------------------
+
 c-function SetMousePosition SetMousePosition n n -- void	( x y -- )
 c-function SetMouseOffset SetMouseOffset n n -- void	( offsetX offsetY -- )
 c-function SetMouseScale SetMouseScale r r -- void	( scaleX scaleY -- )
 c-function GetMouseWheelMove GetMouseWheelMove  -- n	( -- )
 c-function GetTouchX GetTouchX  -- n	( -- )
 c-function GetTouchY GetTouchY  -- n	( -- )
-c-function GetTouchPosition GetTouchPosition n -- struct	( index -- )
+
+\c Vector2* iGetTouchPosition(int index, Vector2* v){
+\c Vector2 va = GetTouchPosition(index);
+\c *v = va; return v; }
+
+c-function iGetTouchPosition iGetTouchPosition n a -- a	( index vector2 --vector2 )
+
 c-function SetGesturesEnabled SetGesturesEnabled u -- void	( gestureFlags -- )
 c-function IsGestureDetected IsGestureDetected n -- n	( gesture -- )
 c-function GetGestureDetected GetGestureDetected  -- n	( -- )
 c-function GetTouchPointsCount GetTouchPointsCount  -- n	( -- )
 c-function GetGestureHoldDuration GetGestureHoldDuration  -- r	( -- )
-c-function GetGestureDragVector GetGestureDragVector  -- struct	( -- )
+
+\c Vector2* iGetGestureDragVector(Vector2* v){
+\c Vector2 va = GetGestureDragVector();
+\c *v = va; return v; }
+
+c-function iGetGestureDragVector iGetGestureDragVector a -- a	( vector2 -- vector2 )
 c-function GetGestureDragAngle GetGestureDragAngle  -- r	( -- )
-c-function GetGesturePinchVector GetGesturePinchVector  -- struct	( -- )
+
+\c Vector2* iGetGesturePinchVector(Vector2* v){
+\c Vector2 va = GetGesturePinchVector();
+\c *v = va; return v; }
+
+c-function iGetGesturePinchVector iGetGesturePinchVector a -- a	( vector2  -- vector2 )
 c-function GetGesturePinchAngle GetGesturePinchAngle  -- r	( -- )
-c-function SetCameraMode SetCameraMode n n -- void	( camera mode -- )
+c-function SetCameraMode SetCameraMode a{*(Camera3D*)} n -- void	( camera mode -- )
 c-function UpdateCamera UpdateCamera a -- void	( camera -- )
 c-function SetCameraPanControl SetCameraPanControl n -- void	( panKey -- )
 c-function SetCameraAltControl SetCameraAltControl n -- void	( altKey -- )
@@ -1022,7 +1093,33 @@ c-function SetAudioStreamBufferSizeDefault SetAudioStreamBufferSizeDefault n -- 
 \ ----===< postfix >===-----
 end-c-library
 
-: GetWindowPosition ( -- f: -- x y )
-  2 sfloats allocate throw
-  iGetWindowPosition dup dup sf@ sfloat+ sf@
+: Vector2> ( Vector2 -- f: -- x y )
+  dup dup sf@ Vector2-y sf@
   free throw ;
+
+: >Vector2 ( f: -- x y -- Vector2 )
+  Vector2 allocate throw
+  dup dup sf! Vector2-y sf! ;
+
+: RaylibVector2Call ( xt -- f: -- x y )
+  Vector2 allocate throw
+  swap execute Vector2> ;
+
+: GetWindowScaleDPI ( -- f: -- x y )
+  ['] iGetWindowScaleDPI RaylibVector2Call ;
+
+: GetWindowPosition ( -- f: -- x y )
+  ['] iGetWindowPosition RaylibVector2Call ;
+
+: GetMouseRay ( Vector2 Camera3d -- Ray )
+  Ray allocate throw
+  iGetMouseRay ;
+\ Might need memory dalloc
+
+: GetCameraMatrix ( Camera3d -- Matrix )
+  Matrix allocate throw
+  iGetCameraMatrix ;
+
+: GetCameraMatrix2D ( Camera2d -- Matrix )
+  Matrix allocate throw
+  iGetCameraMatrix2D ;
