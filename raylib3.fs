@@ -17,7 +17,7 @@ s" raylib" add-lib
 \c #include "raylib.h"
 
 \ ---===< float constants >===----
-3.141593e0	fconstant PI
+\ 3.141593e0	fconstant PI \ already defined
 0.017453e0	fconstant DEG2RAD
 57.295776e0	fconstant RAD2DEG
 
@@ -706,7 +706,7 @@ c-function SaveStorageValue SaveStorageValue u n -- void	( position value -- )
 c-function LoadStorageValue LoadStorageValue u -- n	( position -- )
 c-function OpenURL OpenURL s -- void	( url -- )
 c-function IsKeyPressed IsKeyPressed n -- n	( key -- )
-c-function IsKeyDown IsKeyDown n -- n	( key -- )
+c-function IsKeyDown IsKeyDown n -- n	( key -- key )
 c-function IsKeyReleased IsKeyReleased n -- n	( key -- )
 c-function IsKeyUp IsKeyUp n -- n	( key -- )
 c-function SetExitKey SetExitKey n -- void	( key -- )
@@ -811,28 +811,109 @@ c-function DrawPolyLines DrawPolyLines a{*(Vector2*)} n r r a{*(Color*)} -- void
 c-function CheckCollisionRecs CheckCollisionRecs a{*(Rectangle*)} a{*(Rectangle*)} -- n	( rec1 rec2 -- )
 c-function CheckCollisionCircles CheckCollisionCircles a{*(Vector2*)} r a{*(Vector2*)} r -- n	( center1 radius1 center2 radius2 -- )
 c-function CheckCollisionCircleRec CheckCollisionCircleRec a{*(Vector2*)} r a{*(Rectangle*)} -- n	( center radius rec -- )
-c-function GetCollisionRec GetCollisionRec a{*(Rectangle*)} a{*(Rectangle*)} -- struct	( rec1 rec2 -- )
+
+\c Rectangle* iGetCollisionRec(Rectangle rec1, Rectangle rec2, Rectangle* rec3){
+\c Rectangle rec4 = GetCollisionRec(rec1, rec2);
+\c *rec3 = rec4; return rec3; }
+
+c-function iGetCollisionRec iGetCollisionRec a{*(Rectangle*)} a{*(Rectangle*)} a -- a ( rec1 rec2 rec3 -- rec3 )
 c-function CheckCollisionPointRec CheckCollisionPointRec a{*(Vector2*)} a{*(Rectangle*)} -- n	( point rec -- )
 c-function CheckCollisionPointCircle CheckCollisionPointCircle a{*(Vector2*)} a{*(Vector2*)} r -- n	( point center radius -- )
 c-function CheckCollisionPointTriangle CheckCollisionPointTriangle a{*(Vector2*)} a{*(Vector2*)} a{*(Vector2*)} a{*(Vector2*)} -- n	( point p1 p2 p3 -- )
-c-function LoadImage LoadImage s -- struct	( fileName -- )
-c-function LoadImageRaw LoadImageRaw s n n n n -- struct	( fileName width height format headerSize -- )
-c-function LoadImageAnim LoadImageAnim s a -- struct	( fileName frames -- )
+
+\c Image* iLoadImage(const char* fileName, Image* img){
+\c Image imga = LoadImage(fileName);
+\c *img = imga; return img; }
+
+c-function iLoadImage iLoadImage s a -- a	( fileName image -- image )
+
+\c Image* iLoadImageRaw(const char* fileName, int width, int height, int format, int headerSize, Image* img){
+\c Image imga = LoadImageRaw(fileName, width, height, format, headerSize);
+\c *img = imga; return img; }
+
+c-function iLoadImageRaw iLoadImageRaw s n n n n a -- a	( fileName width height format headerSize image -- image )
+
+\c Image* iLoadImageAnim(const char* fileName, int* frames, Image* img){
+\c Image imga = LoadImageAnim(fileName, frames);
+\c *img = imga; return img; }
+
+c-function iLoadImageAnim iLoadImageAnim s a a -- a	( fileName frames image -- image )
 c-function UnloadImage UnloadImage a{*(Image*)} -- void	( image -- )
 c-function ExportImage ExportImage a{*(Image*)} s -- void	( image fileName -- )
 c-function ExportImageAsCode ExportImageAsCode a{*(Image*)} s -- void	( image fileName -- )
-c-function GenImageColor GenImageColor n n a{*(Color*)} -- struct	( width height color -- )
-c-function GenImageGradientV GenImageGradientV n n a{*(Color*)} a{*(Color*)} -- struct	( width height top bottom -- )
-c-function GenImageGradientH GenImageGradientH n n a{*(Color*)} a{*(Color*)} -- struct	( width height left right -- )
-c-function GenImageGradientRadial GenImageGradientRadial n n r a{*(Color*)} a{*(Color*)} -- struct	( width height density inner outer -- )
-c-function GenImageChecked GenImageChecked n n n n a{*(Color*)} a{*(Color*)} -- struct	( width height checksX checksY col1 col2 -- )
-c-function GenImageWhiteNoise GenImageWhiteNoise n n r -- struct	( width height factor -- )
-c-function GenImagePerlinNoise GenImagePerlinNoise n n n n r -- struct	( width height offsetX offsetY scale -- )
-c-function GenImageCellular GenImageCellular n n n -- struct	( width height tileSize -- )
-c-function ImageCopy ImageCopy a{*(Image*)} -- struct	( image -- )
-c-function ImageFromImage ImageFromImage a{*(Image*)} a{*(Rectangle*)} -- struct	( image rec -- )
-c-function ImageText ImageText s n a{*(Color*)} -- struct	( text fontSize color -- )
-c-function ImageTextEx ImageTextEx a{*(Font*)} s r r a{*(Color*)} -- struct	( font text fontSize spacing tint -- )
+
+\c Image* iGenImageColor(int width, int height, Color color, Image* img){
+\c Image imga = GenImageColor(width, height, color);
+\c *img = imga; return img; }
+
+c-function iGenImageColor iGenImageColor n n a{*(Color*)} a -- a	( width height colorimage -- image )
+
+\c Image* iGenImageGradientV(int width, int height, Color top, Color bottom, Image* img){
+\c Image imga = GenImageGradientV(width, height, top, bottom);
+\c *img = imga; return img; }
+
+c-function iGenImageGradientV iGenImageGradientV n n a{*(Color*)} a{*(Color*)} a -- a ( width height top bottom image -- image )
+
+\c Image* iGenImageGradientH(int width, int height, Color top, Color bottom, Image* img){
+\c Image imga = GenImageGradientH(width, height, top, bottom);
+\c *img = imga; return img; }
+
+c-function iGenImageGradientH iGenImageGradientH n n a{*(Color*)} a{*(Color*)} a -- a	( width height left right image -- image )
+
+\c Image* iGenImageGradientRadial(int width, int height, float density, Color inner, Color outer, Image* img){
+\c Image imga = GenImageGradientRadial(width, height, density, inner, outer);
+\c *img = imga; return img; }
+
+c-function iGenImageGradientRadial iGenImageGradientRadial n n r a{*(Color*)} a{*(Color*)} a -- a	( width height density inner outer image -- image )
+
+\c Image* iGenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2, Image* img){
+\c Image imga = GenImageChecked(width, height, checksX, checksY, col1, col2);
+\c *img = imga; return img; }
+
+c-function iGenImageChecked iGenImageChecked n n n n a{*(Color*)} a{*(Color*)} a -- a	( width height checksX checksY col1 col2 image -- image )
+
+\c Image* iGenImageWhiteNoise(int width, int height, float factor, Image* img){
+\c Image imga = GenImageWhiteNoise(width, height, factor);
+\c *img = imga; return img; }
+
+c-function iGenImageWhiteNoise iGenImageWhiteNoise n n r a -- a	( width height factor image -- image )
+
+\c Image* iGenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale, Image* img){
+\c Image imga = GenImagePerlinNoise(width, height, offsetX, offsetY, scale);
+\c *img = imga; return img; }
+
+c-function iGenImagePerlinNoise iGenImagePerlinNoise n n n n r a -- a	( width height offsetX offsetY scale image -- image )
+
+\c Image* iGenImageCellular(int width, int height, int tileSize, Image* img){
+\c Image imga = GenImageCellular(width, height, tileSize);
+\c *img = imga; return img; }
+
+c-function iGenImageCellular iGenImageCellular n n n a -- a	( width height tileSize image -- image )
+
+\c Image* iImageCopy(Image image, Image* img){
+\c Image imga = ImageCopy(image);
+\c *img = imga; return img; }
+
+c-function iImageCopy iImageCopy a{*(Image*)} a -- a	( image -- )
+
+\c Image* iImageFromImage(Image image, Rectangle rec, Image* img){
+\c Image imga = ImageFromImage(image, rec);
+\c *img = imga; return img; }
+
+c-function iImageFromImage iImageFromImage a{*(Image*)} a{*(Rectangle*)} a -- a	( image rec image -- image )
+
+\c Image* iImageText(const char* text, int fontSize, Color color, Image* img){
+\c Image imga = ImageText(text, fontSize, color);
+\c *img = imga; return img; }
+
+c-function iImageText iImageText s n a{*(Color*)} a -- a ( text fontSize color image -- image )
+
+\c Image* iImageTextEx(Font font, const char* text, float fontSize, float spacing, Color tint, Image* img){
+\c Image imga = ImageTextEx(font, text, fontSize, spacing, tint);
+\c *img = imga; return img; }
+
+c-function iImageTextEx iImageTextEx a{*(Font*)} s r r a{*(Color*)} a -- a ( font text fontSize spacing tint image -- image )
+
 c-function ImageFormat ImageFormat a n -- void	( image newFormat -- )
 c-function ImageToPOT ImageToPOT a a{*(Color*)} -- void	( image fill -- )
 c-function ImageCrop ImageCrop a a{*(Rectangle*)} -- void	( image crop -- )
@@ -858,7 +939,13 @@ c-function ImageColorReplace ImageColorReplace a a{*(Color*)} a{*(Color*)} -- vo
 c-function GetImageData GetImageData a{*(Image*)} -- a	( image -- )
 c-function GetImagePalette GetImagePalette a{*(Image*)} n a -- a	( image maxPaletteSize extractCount -- )
 c-function GetImageDataNormalized GetImageDataNormalized a{*(Image*)} -- a	( image -- )
-c-function GetImageAlphaBorder GetImageAlphaBorder a{*(Image*)} r -- struct	( image threshold -- )
+
+\c Rectangle* iGetImageAlphaBorder(Image image, float threshold, Rectangle* rec){
+\c Rectangle reca = GetImageAlphaBorder(image, threshold);
+\c *rec = reca; return rec; }
+
+c-function iGetImageAlphaBorder iGetImageAlphaBorder a{*(Image*)} r a -- a	( image threshold image -- image )
+
 c-function ImageClearBackground ImageClearBackground a a{*(Color*)} -- void	( dst color -- )
 c-function ImageDrawPixel ImageDrawPixel a n n a{*(Color*)} -- void	( dst posX posY color -- )
 c-function ImageDrawPixelV ImageDrawPixelV a a{*(Vector2*)} a{*(Color*)} -- void	( dst position color -- )
@@ -873,16 +960,47 @@ c-function ImageDrawRectangleLines ImageDrawRectangleLines a a{*(Rectangle*)} n 
 c-function ImageDraw ImageDraw a a{*(Image*)} a{*(Rectangle*)} a{*(Rectangle*)} a{*(Color*)} -- void	( dst src srcRec dstRec tint -- )
 c-function ImageDrawText ImageDrawText a s n n n a{*(Color*)} -- void	( dst text posX posY fontSize color -- )
 c-function ImageDrawTextEx ImageDrawTextEx a a{*(Font*)} s a{*(Vector2*)} r r a{*(Color*)} -- void	( dst font text position fontSize spacing tint -- )
-c-function LoadTexture LoadTexture s -- struct	( fileName -- )
-c-function LoadTextureFromImage LoadTextureFromImage a{*(Image*)} -- struct	( image -- )
-c-function LoadTextureCubemap LoadTextureCubemap a{*(Image*)} n -- n	( image layoutType -- )
-c-function LoadRenderTexture LoadRenderTexture n n -- struct	( width height -- )
+
+\c Texture2D* iLoadTexture(const char* fileName, Texture2D* tex){
+\c Texture2D text = LoadTexture(fileName);
+\c *tex = text; return tex; }
+
+c-function iLoadTexture iLoadTexture s a -- a	( fileName texture2D -- texture2D )
+
+\c Texture2D* iLoadTextureFromImage(Image image, Texture2D* tex){
+\c Texture2D text = LoadTextureFromImage(image);
+\c *tex = text; return tex; }
+
+c-function iLoadTextureFromImage iLoadTextureFromImage a{*(Image*)} a -- a ( image texture2D -- texture2D )
+
+\c TextureCubemap* iLoadTextureCubemap(Image image, int layoutType, TextureCubemap* tex){
+\c TextureCubemap text = LoadTextureCubemap(image, layoutType);
+\c *tex = text; return tex; }
+
+c-function iLoadTextureCubemap iLoadTextureCubemap a{*(Image*)} n a -- a	( image layoutType -- )
+
+\c RenderTexture2D* iLoadRenderTexture(int width, int height, RenderTexture2D* ren){
+\c RenderTexture2D rend = LoadRenderTexture(width, height);
+\c *ren = rend; return ren; }
+
+c-function iLoadRenderTexture iLoadRenderTexture n n a -- a ( width height rendertexture -- rendertexture )
+
 c-function UnloadTexture UnloadTexture a{*(Texture2D*)} -- void	( texture -- )
 c-function UnloadRenderTexture UnloadRenderTexture a{*(RenderTexture2D*)} -- void	( target -- )
 c-function UpdateTexture UpdateTexture a{*(Texture2D*)} a -- void	( texture pixels -- )
 c-function UpdateTextureRec UpdateTextureRec a{*(Texture2D*)} a{*(Rectangle*)} a -- void	( texture rec pixels -- )
-c-function GetTextureData GetTextureData a{*(Texture2D*)} -- struct	( texture -- )
-c-function GetScreenData GetScreenData  -- struct	( -- )
+
+\c Image* iGetTextureData(Texture2D texture, Image* img){
+\c Image imga = GetTextureData(texture);
+\c *img = imga; return img; }
+
+c-function iGetTextureData iGetTextureData a{*(Texture2D*)} a -- a ( texture image -- image )
+
+\c Image* iGetScreenData(Image* img){
+\c Image imga = GetScreenData();
+\c *img = imga; return img; }
+
+c-function iGetScreenData iGetScreenData a -- a	( image -- image )
 c-function GenTextureMipmaps GenTextureMipmaps a -- void	( texture -- )
 c-function SetTextureFilter SetTextureFilter a{*(Texture2D*)} n -- void	( texture filterMode -- )
 c-function SetTextureWrap SetTextureWrap a{*(Texture2D*)} n -- void	( texture wrapMode -- )
@@ -894,24 +1012,37 @@ c-function DrawTextureQuad DrawTextureQuad a{*(Texture2D*)} a{*(Vector2*)} a{*(V
 c-function DrawTextureTiled DrawTextureTiled a{*(Texture2D*)} a{*(Rectangle*)} a{*(Rectangle*)} a{*(Vector2*)} r r a{*(Color*)} -- void	( texture sourceRec destRec origin rotation scale tint -- )
 c-function DrawTexturePro DrawTexturePro a{*(Texture2D*)} a{*(Rectangle*)} a{*(Rectangle*)} a{*(Vector2*)} r a{*(Color*)} -- void	( texture sourceRec destRec origin rotation tint -- )
 c-function DrawTextureNPatch DrawTextureNPatch a{*(Texture2D*)} a{*(NPatchInfo*)} a{*(Rectangle*)} a{*(Vector2*)} r a{*(Color*)} -- void	( texture nPatchInfo destRec origin rotation tint -- )
-c-function Fade Fade a{*(Color*)} r -- struct	( color alpha -- )
+
+\c Color* iFade(Color color, float alpha, Color* col){
+\c Color cola = Fade(color, alpha);
+\c *col = cola; return col; }
+
+c-function iFade iFade a{*(Color*)} r a -- a	( color alpha color -- color )
+
+\c Color* iGetColor(int hex, Color* col){
+\c Color c = GetColor(hex);
+\c *col = c; return col; }
+
+c-function iGetColor iGetColor n a -- a	( hexValue color -- color )
+
 c-function ColorToInt ColorToInt a{*(Color*)} -- n	( color -- )
-c-function ColorNormalize ColorNormalize a{*(Color*)} -- struct	( color -- )
-c-function ColorFromNormalized ColorFromNormalized a{*(Vector4*)} -- struct	( normalized -- )
-c-function ColorToHSV ColorToHSV a{*(Color*)} -- struct	( color -- )
-c-function ColorFromHSV ColorFromHSV r r r -- struct	( hue saturation value -- )
-c-function ColorAlpha ColorAlpha a{*(Color*)} r -- struct	( color alpha -- )
-c-function ColorAlphaBlend ColorAlphaBlend a{*(Color*)} a{*(Color*)} a{*(Color*)} -- struct	( dst src tint -- )
-c-function GetColor GetColor n -- struct	( hexValue -- )
-c-function GetPixelColor GetPixelColor a n -- struct	( srcPtr format -- )
+\ c-function ColorNormalize ColorNormalize a{*(Color*)} -- struct	( color -- )
+\ c-function ColorFromNormalized ColorFromNormalized a{*(Vector4*)} -- struct	( normalized -- )
+\ c-function ColorToHSV ColorToHSV a{*(Color*)} -- struct	( color -- )
+\ c-function ColorFromHSV ColorFromHSV r r r -- struct	( hue saturation value -- )
+\ c-function ColorAlpha ColorAlpha a{*(Color*)} r -- struct	( color alpha -- )
+\ c-function ColorAlphaBlend ColorAlphaBlend a{*(Color*)} a{*(Color*)} a{*(Color*)} -- struct	( dst src tint -- )
+
+
+\ c-function GetPixelColor GetPixelColor a n -- struct	( srcPtr format -- )
 c-function SetPixelColor SetPixelColor a a{*(Color*)} n -- void	( dstPtr color format -- )
 c-function GetPixelDataSize GetPixelDataSize n n n -- n	( width height format -- )
-c-function GetFontDefault GetFontDefault  -- struct	( -- )
-c-function LoadFont LoadFont s -- struct	( fileName -- )
-c-function LoadFontEx LoadFontEx s n a n -- struct	( fileName fontSize fontChars charsCount -- )
-c-function LoadFontFromImage LoadFontFromImage a{*(Image*)} a{*(Color*)} n -- struct	( image key firstChar -- )
+\ c-function GetFontDefault GetFontDefault  -- struct	( -- )
+\ c-function LoadFont LoadFont s -- struct	( fileName -- )
+\ c-function LoadFontEx LoadFontEx s n a n -- struct	( fileName fontSize fontChars charsCount -- )
+\ c-function LoadFontFromImage LoadFontFromImage a{*(Image*)} a{*(Color*)} n -- struct	( image key firstChar -- )
 c-function LoadFontData LoadFontData s n a n n -- a	( fileName fontSize fontChars charsCount type -- )
-c-function GenImageFontAtlas GenImageFontAtlas a a n n n n -- struct	( chars recs charsCount fontSize padding packMethod -- )
+\ c-function GenImageFontAtlas GenImageFontAtlas a a n n n n -- struct	( chars recs charsCount fontSize padding packMethod -- )
 c-function UnloadFont UnloadFont a{*(Font*)} -- void	( font -- )
 c-function DrawFPS DrawFPS n n -- void	( posX posY -- )
 c-function DrawText DrawText s n n n a{*(Color*)} -- void	( text posX posY fontSize color -- )
@@ -920,7 +1051,7 @@ c-function DrawTextRec DrawTextRec a{*(Font*)} s a{*(Rectangle*)} r r n a{*(Colo
 c-function DrawTextRecEx DrawTextRecEx a{*(Font*)} s a{*(Rectangle*)} r r n a{*(Color*)} n n a{*(Color*)} a{*(Color*)} -- void	( font text rec fontSize spacing wordWrap tint selectStart selectLength selectTint selectBackTint -- )
 c-function DrawTextCodepoint DrawTextCodepoint a{*(Font*)} n a{*(Vector2*)} r a{*(Color*)} -- void	( font codepoint position scale tint -- )
 c-function MeasureText MeasureText s n -- n	( text fontSize -- )
-c-function MeasureTextEx MeasureTextEx a{*(Font*)} s r r -- struct	( font text fontSize spacing -- )
+\ c-function MeasureTextEx MeasureTextEx a{*(Font*)} s r r -- struct	( font text fontSize spacing -- )
 c-function GetGlyphIndex GetGlyphIndex a{*(Font*)} n -- n	( font codepoint -- )
 c-function TextCopy TextCopy a s -- n	( dst src -- )
 c-function TextIsEqual TextIsEqual s s -- n	( text1 text2 -- )
@@ -961,14 +1092,14 @@ c-function DrawPlane DrawPlane a{*(Vector3*)} a{*(Vector2*)} a{*(Color*)} -- voi
 c-function DrawRay DrawRay a{*(Ray*)} a{*(Color*)} -- void	( ray color -- )
 c-function DrawGrid DrawGrid n r -- void	( slices spacing -- )
 c-function DrawGizmo DrawGizmo a{*(Vector3*)} -- void	( position -- )
-c-function LoadModel LoadModel s -- struct	( fileName -- )
-c-function LoadModelFromMesh LoadModelFromMesh a{*(Mesh*)} -- struct	( mesh -- )
+\ c-function LoadModel LoadModel s -- struct	( fileName -- )
+\ c-function LoadModelFromMesh LoadModelFromMesh a{*(Mesh*)} -- struct	( mesh -- )
 c-function UnloadModel UnloadModel a{*(Model*)} -- void	( model -- )
 c-function LoadMeshes LoadMeshes s a -- a	( fileName meshCount -- )
 c-function ExportMesh ExportMesh a{*(Mesh*)} s -- void	( mesh fileName -- )
 c-function UnloadMesh UnloadMesh a{*(Mesh*)} -- void	( mesh -- )
 c-function LoadMaterials LoadMaterials s a -- a	( fileName materialCount -- )
-c-function LoadMaterialDefault LoadMaterialDefault  -- struct	( -- )
+\ c-function LoadMaterialDefault LoadMaterialDefault  -- struct	( -- )
 c-function UnloadMaterial UnloadMaterial a{*(Material*)} -- void	( material -- )
 c-function SetMaterialTexture SetMaterialTexture a n a{*(Texture2D*)} -- void	( material mapType texture -- )
 c-function SetModelMeshMaterial SetModelMeshMaterial a n n -- void	( model meshId materialId -- )
@@ -976,17 +1107,17 @@ c-function LoadModelAnimations LoadModelAnimations s a -- a	( fileName animsCoun
 c-function UpdateModelAnimation UpdateModelAnimation a{*(Model*)} a{*(ModelAnimation*)} n -- void	( model anim frame -- )
 c-function UnloadModelAnimation UnloadModelAnimation a{*(ModelAnimation*)} -- void	( anim -- )
 c-function IsModelAnimationValid IsModelAnimationValid a{*(Model*)} a{*(ModelAnimation*)} -- n	( model anim -- )
-c-function GenMeshPoly GenMeshPoly n r -- struct	( sides radius -- )
-c-function GenMeshPlane GenMeshPlane r r n n -- struct	( width length resX resZ -- )
-c-function GenMeshCube GenMeshCube r r r -- struct	( width height length -- )
-c-function GenMeshSphere GenMeshSphere r n n -- struct	( radius rings slices -- )
-c-function GenMeshHemiSphere GenMeshHemiSphere r n n -- struct	( radius rings slices -- )
-c-function GenMeshCylinder GenMeshCylinder r r n -- struct	( radius height slices -- )
-c-function GenMeshTorus GenMeshTorus r r n n -- struct	( radius size radSeg sides -- )
-c-function GenMeshKnot GenMeshKnot r r n n -- struct	( radius size radSeg sides -- )
-c-function GenMeshHeightmap GenMeshHeightmap a{*(Image*)} a{*(Vector3*)} -- struct	( heightmap size -- )
-c-function GenMeshCubicmap GenMeshCubicmap a{*(Image*)} a{*(Vector3*)} -- struct	( cubicmap cubeSize -- )
-c-function MeshBoundingBox MeshBoundingBox a{*(Mesh*)} -- struct	( mesh -- )
+\ c-function GenMeshPoly GenMeshPoly n r -- struct	( sides radius -- )
+\ c-function GenMeshPlane GenMeshPlane r r n n -- struct	( width length resX resZ -- )
+\ c-function GenMeshCube GenMeshCube r r r -- struct	( width height length -- )
+\ c-function GenMeshSphere GenMeshSphere r n n -- struct	( radius rings slices -- )
+\ c-function GenMeshHemiSphere GenMeshHemiSphere r n n -- struct	( radius rings slices -- )
+\ c-function GenMeshCylinder GenMeshCylinder r r n -- struct	( radius height slices -- )
+\ c-function GenMeshTorus GenMeshTorus r r n n -- struct	( radius size radSeg sides -- )
+\ c-function GenMeshKnot GenMeshKnot r r n n -- struct	( radius size radSeg sides -- )
+\ c-function GenMeshHeightmap GenMeshHeightmap a{*(Image*)} a{*(Vector3*)} -- struct	( heightmap size -- )
+\ c-function GenMeshCubicmap GenMeshCubicmap a{*(Image*)} a{*(Vector3*)} -- struct	( cubicmap cubeSize -- )
+\ c-function MeshBoundingBox MeshBoundingBox a{*(Mesh*)} -- struct	( mesh -- )
 c-function MeshTangents MeshTangents a -- void	( mesh -- )
 c-function MeshBinormals MeshBinormals a -- void	( mesh -- )
 c-function MeshNormalsSmooth MeshNormalsSmooth a -- void	( mesh -- )
@@ -995,24 +1126,24 @@ c-function DrawModelEx DrawModelEx a{*(Model*)} a{*(Vector3*)} a{*(Vector3*)} r 
 c-function DrawModelWires DrawModelWires a{*(Model*)} a{*(Vector3*)} r a{*(Color*)} -- void	( model position scale tint -- )
 c-function DrawModelWiresEx DrawModelWiresEx a{*(Model*)} a{*(Vector3*)} a{*(Vector3*)} r a{*(Vector3*)} a{*(Color*)} -- void	( model position rotationAxis rotationAngle scale tint -- )
 c-function DrawBoundingBox DrawBoundingBox a{*(BoundingBox*)} a{*(Color*)} -- void	( box color -- )
-c-function DrawBillboard DrawBillboard n a{*(Texture2D*)} a{*(Vector3*)} r a{*(Color*)} -- void	( camera texture center size tint -- )
-c-function DrawBillboardRec DrawBillboardRec n a{*(Texture2D*)} a{*(Rectangle*)} a{*(Vector3*)} r a{*(Color*)} -- void	( camera texture sourceRec center size tint -- )
+c-function DrawBillboard DrawBillboard a{*(Camera3D*)} a{*(Texture2D*)} a{*(Vector3*)} r a{*(Color*)} -- void	( camera texture center size tint -- )
+c-function DrawBillboardRec DrawBillboardRec a{*(Camera3D*)} a{*(Texture2D*)} a{*(Rectangle*)} a{*(Vector3*)} r a{*(Color*)} -- void	( camera texture sourceRec center size tint -- )
 c-function CheckCollisionSpheres CheckCollisionSpheres a{*(Vector3*)} r a{*(Vector3*)} r -- n	( centerA radiusA centerB radiusB -- )
 c-function CheckCollisionBoxes CheckCollisionBoxes a{*(BoundingBox*)} a{*(BoundingBox*)} -- n	( box1 box2 -- )
 c-function CheckCollisionBoxSphere CheckCollisionBoxSphere a{*(BoundingBox*)} a{*(Vector3*)} r -- n	( box center radius -- )
 c-function CheckCollisionRaySphere CheckCollisionRaySphere a{*(Ray*)} a{*(Vector3*)} r -- n	( ray center radius -- )
 c-function CheckCollisionRaySphereEx CheckCollisionRaySphereEx a{*(Ray*)} a{*(Vector3*)} r a -- n	( ray center radius collisionPoint -- )
 c-function CheckCollisionRayBox CheckCollisionRayBox a{*(Ray*)} a{*(BoundingBox*)} -- n	( ray box -- )
-c-function GetCollisionRayModel GetCollisionRayModel a{*(Ray*)} a{*(Model*)} -- struct	( ray model -- )
-c-function GetCollisionRayTriangle GetCollisionRayTriangle a{*(Ray*)} a{*(Vector3*)} a{*(Vector3*)} a{*(Vector3*)} -- struct	( ray p1 p2 p3 -- )
-c-function GetCollisionRayGround GetCollisionRayGround a{*(Ray*)} r -- struct	( ray groundHeight -- )
-c-function LoadShader LoadShader s s -- struct	( vsFileName fsFileName -- )
-c-function LoadShaderCode LoadShaderCode s s -- struct	( vsCode fsCode -- )
+\ c-function GetCollisionRayModel GetCollisionRayModel a{*(Ray*)} a{*(Model*)} -- struct	( ray model -- )
+\ c-function GetCollisionRayTriangle GetCollisionRayTriangle a{*(Ray*)} a{*(Vector3*)} a{*(Vector3*)} a{*(Vector3*)} -- struct	( ray p1 p2 p3 -- )
+\ c-function GetCollisionRayGround GetCollisionRayGround a{*(Ray*)} r -- struct	( ray groundHeight -- )
+\ c-function LoadShader LoadShader s s -- struct	( vsFileName fsFileName -- )
+\ c-function LoadShaderCode LoadShaderCode s s -- struct	( vsCode fsCode -- )
 c-function UnloadShader UnloadShader a{*(Shader*)} -- void	( shader -- )
-c-function GetShaderDefault GetShaderDefault  -- struct	( -- )
-c-function GetTextureDefault GetTextureDefault  -- struct	( -- )
-c-function GetShapesTexture GetShapesTexture  -- struct	( -- )
-c-function GetShapesTextureRec GetShapesTextureRec  -- struct	( -- )
+\ c-function GetShaderDefault GetShaderDefault  -- struct	( -- )
+\ c-function GetTextureDefault GetTextureDefault  -- struct	( -- )
+\ c-function GetShapesTexture GetShapesTexture  -- struct	( -- )
+\ c-function GetShapesTextureRec GetShapesTextureRec  -- struct	( -- )
 c-function SetShapesTexture SetShapesTexture a{*(Texture2D*)} a{*(Rectangle*)} -- void	( texture source -- )
 c-function GetShaderLocation GetShaderLocation a{*(Shader*)} s -- n	( shader uniformName -- )
 c-function SetShaderValue SetShaderValue a{*(Shader*)} n a n -- void	( shader uniformLoc value uniformType -- )
@@ -1021,12 +1152,12 @@ c-function SetShaderValueMatrix SetShaderValueMatrix a{*(Shader*)} n a{*(Matrix*
 c-function SetShaderValueTexture SetShaderValueTexture a{*(Shader*)} n a{*(Texture2D*)} -- void	( shader uniformLoc texture -- )
 c-function SetMatrixProjection SetMatrixProjection a{*(Matrix*)} -- void	( proj -- )
 c-function SetMatrixModelview SetMatrixModelview a{*(Matrix*)} -- void	( view -- )
-c-function GetMatrixModelview GetMatrixModelview  -- struct	( -- )
-c-function GetMatrixProjection GetMatrixProjection  -- struct	( -- )
-c-function GenTextureCubemap GenTextureCubemap a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader map size -- )
-c-function GenTextureIrradiance GenTextureIrradiance a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader cubemap size -- )
-c-function GenTexturePrefilter GenTexturePrefilter a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader cubemap size -- )
-c-function GenTextureBRDF GenTextureBRDF a{*(Shader*)} n -- struct	( shader size -- )
+\ c-function GetMatrixModelview GetMatrixModelview  -- struct	( -- )
+\ c-function GetMatrixProjection GetMatrixProjection  -- struct	( -- )
+\ c-function GenTextureCubemap GenTextureCubemap a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader map size -- )
+\ c-function GenTextureIrradiance GenTextureIrradiance a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader cubemap size -- )
+\ c-function GenTexturePrefilter GenTexturePrefilter a{*(Shader*)} a{*(Texture2D*)} n -- struct	( shader cubemap size -- )
+\ c-function GenTextureBRDF GenTextureBRDF a{*(Shader*)} n -- struct	( shader size -- )
 c-function BeginShaderMode BeginShaderMode a{*(Shader*)} -- void	( shader -- )
 c-function EndShaderMode EndShaderMode  -- void	( -- )
 c-function BeginBlendMode BeginBlendMode n -- void	( mode -- )
@@ -1043,9 +1174,9 @@ c-function InitAudioDevice InitAudioDevice  -- void	( -- )
 c-function CloseAudioDevice CloseAudioDevice  -- void	( -- )
 c-function IsAudioDeviceReady IsAudioDeviceReady  -- n	( -- )
 c-function SetMasterVolume SetMasterVolume r -- void	( volume -- )
-c-function LoadWave LoadWave s -- struct	( fileName -- )
-c-function LoadSound LoadSound s -- struct	( fileName -- )
-c-function LoadSoundFromWave LoadSoundFromWave a{*(Wave*)} -- struct	( wave -- )
+\ c-function LoadWave LoadWave s -- struct	( fileName -- )
+\ c-function LoadSound LoadSound s -- struct	( fileName -- )
+\ c-function LoadSoundFromWave LoadSoundFromWave a{*(Wave*)} -- struct	( wave -- )
 c-function UpdateSound UpdateSound a{*(Sound*)} a n -- void	( sound data samplesCount -- )
 c-function UnloadWave UnloadWave a{*(Wave*)} -- void	( wave -- )
 c-function UnloadSound UnloadSound a{*(Sound*)} -- void	( sound -- )
@@ -1062,10 +1193,10 @@ c-function IsSoundPlaying IsSoundPlaying a{*(Sound*)} -- n	( sound -- )
 c-function SetSoundVolume SetSoundVolume a{*(Sound*)} r -- void	( sound volume -- )
 c-function SetSoundPitch SetSoundPitch a{*(Sound*)} r -- void	( sound pitch -- )
 c-function WaveFormat WaveFormat a n n n -- void	( wave sampleRate sampleSize channels -- )
-c-function WaveCopy WaveCopy a{*(Wave*)} -- struct	( wave -- )
+\ c-function WaveCopy WaveCopy a{*(Wave*)} -- struct	( wave -- )
 c-function WaveCrop WaveCrop a n n -- void	( wave initSample finalSample -- )
 c-function GetWaveData GetWaveData a{*(Wave*)} -- a	( wave -- )
-c-function LoadMusicStream LoadMusicStream s -- struct	( fileName -- )
+\ c-function LoadMusicStream LoadMusicStream s -- struct	( fileName -- )
 c-function UnloadMusicStream UnloadMusicStream a{*(Music*)} -- void	( music -- )
 c-function PlayMusicStream PlayMusicStream a{*(Music*)} -- void	( music -- )
 c-function UpdateMusicStream UpdateMusicStream a{*(Music*)} -- void	( music -- )
@@ -1077,7 +1208,7 @@ c-function SetMusicVolume SetMusicVolume a{*(Music*)} r -- void	( music volume -
 c-function SetMusicPitch SetMusicPitch a{*(Music*)} r -- void	( music pitch -- )
 c-function GetMusicTimeLength GetMusicTimeLength a{*(Music*)} -- r	( music -- )
 c-function GetMusicTimePlayed GetMusicTimePlayed a{*(Music*)} -- r	( music -- )
-c-function InitAudioStream InitAudioStream u u u -- struct	( sampleRate sampleSize channels -- )
+\ c-function InitAudioStream InitAudioStream u u u -- struct	( sampleRate sampleSize channels -- )
 c-function UpdateAudioStream UpdateAudioStream a{*(AudioStream*)} a n -- void	( stream data samplesCount -- )
 c-function CloseAudioStream CloseAudioStream a{*(AudioStream*)} -- void	( stream -- )
 c-function IsAudioStreamProcessed IsAudioStreamProcessed a{*(AudioStream*)} -- n	( stream -- )
