@@ -61,31 +61,44 @@ Camera3D allocate drop Value exCamera
 
 0.0e 0.0e 0.0e >Vector3 Value cubePosition
 
+: example-text ( -- )
+    10 10 320 133 SKYBLUE DrawRectangle
+    10 10 320 133 BLUE DrawRectangleLines
+    s" Free camera default controls:" 20 20 10 BLACK DrawText
+    s" - Mouse Wheel to Zoom in-out" 40 40 10 DARKGRAY DrawText
+    s" - Mouse Wheel PRessed to Pan" 40 60 10 DARKGRAY DrawText
+    s" - Alt + Mouse Wheel Pressed to Pan" 40 80 10 DARKGRAY DrawText
+    s" - Alt + Ctrl + Mouse Wheel Pressed for Smooth Zoom" 40 100 10 DARKGRAY DrawText
+    s" - Z to zoom to (0, 0, 0)" 40 120 10 DARKGRAY DrawText ;
+
+: example-cube ( -- )
+    cubePosition 2.0e 2.0e 2.0e RED DrawCube
+    cubePosition 2.0e 2.0e 2.0e MAROON DrawCubeWires
+    10 1.0e DrawGrid ;
+
+: example-reset ( -- )
+    KEY_Z IsKeyDown if
+	0.0e 0.0e 0.0e >Vector3 exCamera
+	Camera3D-target toCamera
+    then ;
 
 : example-loop ( -- )
     begin
-    exCamera UpdateCamera
-    0.0e 0.0e 0.0e >Vector3 exCamera Camera3D-target toCamera
-    BeginDrawing
+	exCamera UpdateCamera
+	example-reset
+	BeginDrawing
 	RAYWHITE ClearBackground 
 	exCamera BeginMode3D
-	cubePosition 2.0e 2.0e 2.0e RED DrawCube
-	cubePosition 2.0e 2.0e 2.0e MAROON DrawCubeWires
-	10 1.0e DrawGrid
+	example-cube
 	EndMode3D
-	10 10 320 133 SKYBLUE DrawRectangle
-	10 10 320 133 BLUE DrawRectangleLines
-	s" Free camera default controls:" 20 20 10 BLACK DrawText
-	s" - Mouse Wheel to Zoom in-out" 40 40 10 DARKGRAY DrawText
-	s" - Mouse Wheel PRessed to Pan" 40 60 10 DARKGRAY DrawText
-	s" - Alt + Mouse Wheel Pressed to Pan" 40 80 10 DARKGRAY DrawText
-	s" - Alt + Ctrl + Mouse Wheel Pressed for Smooth Zoom" 40 100 10 DARKGRAY DrawText
-	s" - Z to zoom to (0, 0, 0)" 40 120 10 DARKGRAY DrawText
+	example-text
 	EndDrawing
-    again
-;
+    WindowShouldClose until ;
 
 : start ( -- )
     example-init
     example-init-camera
-    example-loop ;
+    exCamera CAMERA_FREE SetCameraMode
+    60 SetTargetFPS
+    example-loop
+    CloseWindow ;
