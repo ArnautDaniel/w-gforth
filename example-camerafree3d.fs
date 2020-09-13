@@ -1,7 +1,24 @@
-\ include raylib3.fs
+include raylib3.fs
 
 800 Constant screenWidth
 450 Constant screenHeight
+
+( RED MAROON SKYBLUE BLUE BLACK DARKGRAY )
+
+: >Color ( r g b a -- Color )
+    Color allocate throw { col }
+    col Color-a c!
+    col Color-b c!
+    col Color-g c!
+    col Color-r c! col ;
+
+230 41 55 255 >Color Constant RED
+190 33 55 255 >Color Constant MAROON
+102 191 241 255 >Color Constant SKYBLUE
+0 121 241 255 >Color Constant BLUE
+0 0 0 255 >Color Constant BLACK
+80 80 80 255 >Color Constant DARKGRAY
+245 245 245 255 >Color Constant RAYWHITE
 
 : example-init ( -- )
   screenWidth screenHeight
@@ -50,18 +67,20 @@ Camera3D allocate drop Value exCamera
     exCamera UpdateCamera
     0.0e 0.0e 0.0e >Vector3 exCamera Camera3D-target toCamera
     BeginDrawing
-    0xFFE4E100 Color allocate drop iGetColor ClearBackground 
-    exCamera BeginMode3D
-    cubePosition 2.0e 2.0e 2.0e 0xFF660001 Color allocate drop
-    iGetColor DrawCube
-    cubePosition 2.0e 2.0e 2.0e 0xCC660101 Color allocate drop
-    iGetColor DrawCubeWires
-    10 1.0e DrawGrid
-    EndMode3D
-    10 10 320 133 0x00331101 Color allocate drop
-    iGetColor DrawRectangle
-    10 10 320 133 0x00342501 Color allocate drop 
-    iGetColor DrawRectangleLines
+	RAYWHITE ClearBackground 
+	exCamera BeginMode3D
+	cubePosition 2.0e 2.0e 2.0e RED DrawCube
+	cubePosition 2.0e 2.0e 2.0e MAROON DrawCubeWires
+	10 1.0e DrawGrid
+	EndMode3D
+	10 10 320 133 SKYBLUE DrawRectangle
+	10 10 320 133 BLUE DrawRectangleLines
+	s" Free camera default controls:" 20 20 10 BLACK DrawText
+	s" - Mouse Wheel to Zoom in-out" 40 40 10 DARKGRAY DrawText
+	s" - Mouse Wheel PRessed to Pan" 40 60 10 DARKGRAY DrawText
+	s" - Alt + Mouse Wheel Pressed to Pan" 40 80 10 DARKGRAY DrawText
+	s" - Alt + Ctrl + Mouse Wheel Pressed for Smooth Zoom" 40 100 10 DARKGRAY DrawText
+	s" - Z to zoom to (0, 0, 0)" 40 120 10 DARKGRAY DrawText
 	EndDrawing
     again
 ;
