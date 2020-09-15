@@ -1,44 +1,16 @@
+\ Not the best example of Gforth-raylib code yet.
+\ Yet it's still a working example.
+
 include raylib3.fs
 
 800 Constant screenWidth
 450 Constant screenHeight
-
-( RED MAROON SKYBLUE BLUE BLACK DARKGRAY )
-
-: >Color ( r g b a -- Color )
-    Color allocate throw { col }
-    col Color-a c!
-    col Color-b c!
-    col Color-g c!
-    col Color-r c! col ;
-
-230 41 55 255 >Color Constant RED
-190 33 55 255 >Color Constant MAROON
-102 191 241 255 >Color Constant SKYBLUE
-0 121 241 255 >Color Constant BLUE
-0 0 0 255 >Color Constant BLACK
-80 80 80 255 >Color Constant DARKGRAY
-245 245 245 255 >Color Constant RAYWHITE
+Camera3D allocate drop Value exCamera
 
 : example-init ( -- )
   screenWidth screenHeight
   s" raylib [core] example - 3d camera free"
   InitWindow ;
-
-Camera3D allocate drop Value exCamera
-
-
-: >Vector3 ( f: -- x y z -- Vector3 )
-    Vector3 allocate throw { Vec3 }
-    Vec3 Vector3-z sf!
-    Vec3 Vector3-y sf!
-    Vec3 sf! Vec3 ;
-
-: Vector3> ( Vector3 -- f: -- x y z )
-    { Vec3 }
-    Vec3 sf@
-    Vec3 Vector3-y sf@
-    Vec3 Vector3-z sf@ ;
 
 : toCamera ( Vector3 Camera -- )
     { Vec3 Cam }

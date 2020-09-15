@@ -35,3 +35,16 @@ LoadTextureCubemap
 
 GetTextureData
 GetScreenData
+Fade
+ColorNormalize
+ColorFromNormalized
+ColorToHSV
+ColorFromHSV
+ColorAlpha
+ColorAlphaBlend
+GetPixelColor
+GetFontDefault
+LoadFont
+LoadFontEx
+LoadFontFromImage
+GenImageFontAtlas
